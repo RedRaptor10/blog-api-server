@@ -7,6 +7,7 @@ var PostSchema = new Schema({
     author: { type: Schema.Types.ObjectId, ref: 'User', required: true },
     date: { type: Date, required: true },
     content: { type: String, minLength: 1, required: true },
+    published: { type: Boolean, required: true },
     comments: [{ type: Schema.Types.ObjectId, ref: 'Comment' }]
 });
 
