@@ -3,12 +3,14 @@ const router = express.Router();
 
 // Controller
 const postController = require('../controllers/postController');
-const commentController = require('../controllers/commentController');
 
-// Posts
+// Get All Posts
 router.get('/', postController.getPosts);
 
-// Post Comments
-router.get('/:postId/comments', commentController.getPostComments);
+// Get Single Post
+router.get('/:postId', postController.getPost);
+
+// Get Post Comments
+router.get('/:postId/comments', postController.getPostComments);
 
 module.exports = router;

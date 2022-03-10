@@ -9,3 +9,12 @@ exports.getUsers = function(req, res, next) {
         res.json(results);
     });
 };
+
+// Get User
+exports.getUser = function(req, res, next) {
+    User.find({'username': req.params.username }, {'password': 0 }) // Exclude password from db query
+    .exec(function(err, results) {
+        if (err) { return next(err); }
+        res.json(results);
+    });
+};

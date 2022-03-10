@@ -11,10 +11,9 @@ exports.getComments = function(req, res, next) {
     });
 };
 
-// Get Post Comments
-exports.getPostComments = function(req, res, next) {
-    Comment.find({'post': req.params.postId })
-    .sort({ '_id': 1 }) // Sort by id in ascending order
+// Get Comment
+exports.getComment = function(req, res, next) {
+    Comment.find({ '_id': req.params.commentId })
     .populate('author', { 'password': 0 }) // Exclude password from db query
     .exec(function(err, results) {
         if (err) { return next(err); }
