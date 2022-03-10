@@ -22,13 +22,31 @@ exports.getPost = function(req, res, next) {
     });
 };
 
-// Get Post Comments
-exports.getPostComments = function(req, res, next) {
-    Comment.find({'post': req.params.postId })
-    .sort({ '_id': 1 }) // Sort by id in ascending order
-    .populate('author', { 'password': 0 }) // Exclude password from db query
-    .exec(function(err, results) {
-        if (err) { return next(err); }
-        res.json(results);
-    });
-};
+// Create Post
+exports.createPost = [
+    (req, res, next) => {
+        const post = new Post ({
+            title: req.body.title,
+            author: req.body.author,
+            date: req.body.date,
+            content: req.body.content,
+            published: true
+        });
+
+        // Save post to database
+        post.save(function(err) {
+            if (err) { return next(err); }
+            res.json({
+                post: {
+                    'id': post._id,
+                    title: post.title,
+                    author: post.author._id,
+                    date: post.date,
+                    content: post.content,
+                    published: post.published
+                },
+                message: 'Success'
+            });
+        });
+    }
+];
