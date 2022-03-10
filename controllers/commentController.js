@@ -6,7 +6,7 @@ exports.getComments = function(req, res, next) {
     .sort({ '_id': 1 }) // Sort by id in ascending order
     .populate('author', { 'password': 0 }) // Exclude password from db query
     .exec(function(err, results) {
-        if (err) { res.json({ error: err.message }) }//return next(err.message); }
+        if (err) { return next(err); }
         res.json(results);
     });
 };
