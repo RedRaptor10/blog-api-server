@@ -80,3 +80,15 @@ exports.updatePostComment = [
         });
     }
 ];
+
+// Delete Comment
+exports.deletePostComment = [
+    (req, res, next) => {
+        Comment.findByIdAndRemove(req.params.commentId, function(err) {
+            if (err) { return next(err); }
+            res.json({
+                message: 'Success'
+            });
+        });
+    }
+];

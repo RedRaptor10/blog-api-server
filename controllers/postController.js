@@ -73,3 +73,15 @@ exports.updatePost = [
         });
     }
 ];
+
+// Delete Post
+exports.deletePost = [
+    (req, res, next) => {
+        Post.findByIdAndRemove(req.params.postId, function(err) {
+            if (err) { return next(err); }
+            res.json({
+                message: 'Success'
+            });
+        });
+    }
+];

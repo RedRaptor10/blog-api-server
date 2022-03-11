@@ -101,3 +101,15 @@ exports.updateUser = [
         });
     }
 ];
+
+// Delete User
+exports.deleteUser = [
+    (req, res, next) => {
+        User.findOneAndRemove({ 'username': req.params.username }, function(err) {
+            if (err) { return next(err); }
+            res.json({
+                message: 'Success'
+            });
+        });
+    }
+];

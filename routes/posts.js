@@ -26,4 +26,10 @@ router.post('/:postId/update', postController.updatePost);
 // Update Post Comment
 router.post('/:postId/comments/:commentId/update', commentController.updatePostComment);
 
+// Delete Post
+router.post('/:postId/delete', postController.deletePost);
+
+// Delete Post Comment
+router.post('/:postId/comments/:commentId/delete', commentController.deletePostComment);
+
 module.exports = router;
