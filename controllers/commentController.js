@@ -58,3 +58,25 @@ exports.createPostComment = [
         });
     }
 ];
+
+// Update Comment
+exports.updatePostComment = [
+    (req, res, next) => {
+        const comment = new Comment ({
+            _id: req.params.commentId,
+            author: req.body.author,
+            post: req.params.postId,
+            date: req.body.date,
+            content: req.body.content
+        });
+
+        // Save comment to database
+        Comment.findByIdAndUpdate(req.params.commentId, comment, { new: true }, function(err, results) {
+            if (err) { return next(err); }
+            res.json({
+                comment: results,
+                message: 'Success'
+            });
+        });
+    }
+];

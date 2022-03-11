@@ -50,3 +50,26 @@ exports.createPost = [
         });
     }
 ];
+
+// Update Post
+exports.updatePost = [
+    (req, res, next) => {
+        const post = new Post ({
+            _id: req.params.postId,
+            title: req.body.title,
+            author: req.body.author,
+            date: req.body.date,
+            content: req.body.content,
+            published: true
+        });
+
+        // Save post to database
+        Post.findByIdAndUpdate(req.params.postId, post, { new: true }, function(err, results) {
+            if (err) { return next(err); }
+            res.json({
+                post: results,
+                message: 'Success'
+            });
+        });
+    }
+];

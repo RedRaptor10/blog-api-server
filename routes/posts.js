@@ -20,4 +20,10 @@ router.post('/create', postController.createPost);
 // Create Post Comment
 router.post('/:postId/comments/create', commentController.createPostComment);
 
+// Update Post
+router.post('/:postId/update', postController.updatePost);
+
+// Update Post Comment
+router.post('/:postId/comments/:commentId/update', commentController.updatePostComment);
+
 module.exports = router;
