@@ -13,4 +13,7 @@ router.get('/:username', userController.getUser);
 // Create User
 router.post('/create', userController.createUser);
 
+// Update User
+router.post('/:username/update', userController.updateUser);
+
 module.exports = router;
