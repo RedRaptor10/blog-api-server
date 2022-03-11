@@ -36,8 +36,8 @@ exports.getPostComments = function(req, res, next) {
 exports.createPostComment = [
     (req, res, next) => {
         const comment = new Comment ({
-            author: req.body.author,
             post: req.params.postId,
+            author: req.body.author,
             date: req.body.date,
             content: req.body.content
         });
@@ -48,8 +48,8 @@ exports.createPostComment = [
             res.json({
                 comment: {
                     'id': comment._id,
-                    author: comment.author._id,
                     post: comment.post._id,
+                    author: comment.author._id,
                     date: comment.date,
                     content: comment.content
                 },
@@ -64,8 +64,8 @@ exports.updatePostComment = [
     (req, res, next) => {
         const comment = new Comment ({
             _id: req.params.commentId,
-            author: req.body.author,
             post: req.params.postId,
+            author: req.body.author,
             date: req.body.date,
             content: req.body.content
         });

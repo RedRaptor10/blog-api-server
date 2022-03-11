@@ -3,8 +3,8 @@ var Schema = mongoose.Schema;
 const { DateTime } = require('luxon');
 
 var CommentSchema = new Schema({
-    author: { type: Schema.Types.ObjectId, ref: 'User', required: true },
     post: { type: Schema.Types.ObjectId, ref: 'Post', required: true },
+    author: { type: Schema.Types.ObjectId, ref: 'User', required: true },
     date: { type: Date, required: true },
     content: { type: String, minLength: 1, required: true }
 });
