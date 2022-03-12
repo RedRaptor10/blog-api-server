@@ -5,6 +5,9 @@ var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 var mongoose = require('mongoose');
 
+// Passport
+require('./passport');
+
 // Models
 require('./models/user');
 require('./models/post');
