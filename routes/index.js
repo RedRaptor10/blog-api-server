@@ -24,8 +24,8 @@ router.post('/login', function (req, res, next) {
         // Log the user in
         req.login(user, {session: false}, (err) => {
             if (err) { res.json(err); }
-            // Generate a signed JSON web token with the contents of the user object
-            const token = jwt.sign({user}, 'jwt_secret', { expiresIn: '60s' });
+            // Generate a signed JSON web token with the contents of the user object (NOTE: Access user info via req.user.info)
+            const token = jwt.sign({info: user}, 'jwt_secret', { expiresIn: '60s' });
             return res.json({ user, token });
         });
     })(req, res);
