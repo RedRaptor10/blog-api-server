@@ -1,5 +1,26 @@
 const Comment = require('../models/comment');
 
+// Checks if user is authorized
+exports.checkAuth = (req, res, next) => {
+    // Allow authorization if user is an admin
+    if (req.user.info.role == 'admin') {
+        return next();
+    }
+
+    // Get Comment
+    Comment.findOne({ '_id': req.params.commentId })
+    .populate('author', { 'password': 0 }) // Exclude password from db query
+    .exec(function(err, results) {
+        if (err) { return next(err); }
+        // Allow authorization if user is equal to comment author
+        if (results.author.username == req.user.info.username) {
+            return next();
+        } else {
+            return res.json({message: 'Unauthorized'});
+        }
+    });
+}
+
 // Get Comments
 exports.getComments = function(req, res, next) {
     Comment.find({})
@@ -13,7 +34,7 @@ exports.getComments = function(req, res, next) {
 
 // Get Comment
 exports.getComment = function(req, res, next) {
-    Comment.find({ '_id': req.params.commentId })
+    Comment.findOne({ '_id': req.params.commentId })
     .populate('author', { 'password': 0 }) // Exclude password from db query
     .exec(function(err, results) {
         if (err) { return next(err); }

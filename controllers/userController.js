@@ -1,6 +1,17 @@
 const User = require('../models/user');
 const bcrypt = require('bcryptjs');
 
+// Checks if user is authorized
+exports.checkAuth = (req, res, next) => {
+    // Allow authorization if user is an admin OR if URL contains username
+    if (req.user.info.role == 'admin'
+        || req.params.username == req.user.info.username) {
+        return next();
+    } else {
+        return res.json({message: 'Unauthorized'});
+    }
+};
+
 // Get Users
 exports.getUsers = function(req, res, next) {
     User.find({}, { 'password': 0} ) // Exclude password from db query
@@ -13,7 +24,7 @@ exports.getUsers = function(req, res, next) {
 
 // Get User
 exports.getUser = function(req, res, next) {
-    User.find({'username': req.params.username }, {'password': 0 }) // Exclude password from db query
+    User.findOne({'username': req.params.username }, {'password': 0 }) // Exclude password from db query
     .exec(function(err, results) {
         if (err) { return next(err); }
         res.json(results);
