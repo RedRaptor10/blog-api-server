@@ -13,7 +13,7 @@ exports.checkAuth = (req, res, next) => {
     .exec(function(err, results) {
         if (err) { return next(err); }
         // Allow authorization if user is equal to comment author
-        if (results.author.username == req.user.info.username) {
+        if (req.user.info.username == results.author.username) {
             return next();
         } else {
             return res.json({message: 'Unauthorized'});

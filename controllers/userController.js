@@ -4,8 +4,7 @@ const bcrypt = require('bcryptjs');
 // Checks if user is authorized
 exports.checkAuth = (req, res, next) => {
     // Allow authorization if user is an admin OR if URL contains username
-    if (req.user.info.role == 'admin'
-        || req.params.username == req.user.info.username) {
+    if (req.user.info.role == 'admin' || req.user.info.username == req.params.username) {
         return next();
     } else {
         return res.json({message: 'Unauthorized'});
