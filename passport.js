@@ -15,7 +15,7 @@ passport.use(new LocalStrategy((username, password, done) => {
         if (!user) { return done(null, false, { message: 'Incorrect username.' }); }
         bcrypt.compare(password, user.password, (err, res) => {
             if (err) { return done(err); }
-            if (res) { return done(null, user, { message: 'Logged in successfully.' }); }
+            if (res) { return done(null, { _id: user._id, username: user.username, role: user.role }, { message: 'Logged in successfully.' }); }
             else { return done(null, false, { message: 'Incorrect password.' }); }
         });
     });
