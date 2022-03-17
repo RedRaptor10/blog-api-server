@@ -14,7 +14,6 @@ exports.logIn = [
         const errors = validationResult(req);
 
         if (!errors.isEmpty()) {
-            // Error, render form again with sanitized values/error messages
             res.json({ username: req.body.username, errors: errors.array() });
         } else {
             // Authenticate with database (NOTE: {session: false} is passed so that the user isn't saved in the session.)

@@ -1,4 +1,5 @@
 const User = require('../models/user');
+const { body, validationResult } = require('express-validator');
 const bcrypt = require('bcryptjs');
 
 // Checks if user is authorized
@@ -32,40 +33,54 @@ exports.getUser = function(req, res, next) {
 
 // Create User
 exports.createUser = [
+    // Validate and sanitize fields
+    body('username').trim().isLength({ min: 1 }).escape().withMessage('Username required.')
+        .isLength({ max: 20 }).withMessage('Username must have 20 characters or less.'),
+    body('password', 'Password must contain at least 5 characters.').trim().isLength({ min: 5 }).escape(),
+    body('confirmPassword', 'Passwords do not match.').trim().escape().custom((value, { req }) => value === req.body.password),
+
+    // Process Sign Up
     (req, res, next) => {
-        const user = new User({
-            username: req.body.username,
-            password: req.body.password,
-            role: req.body.role
-        });
+        // Extract the validation errors from request
+        const errors = validationResult(req);
 
-        // Check if username already exists
-        User.findOne({ 'username': user.username })
-        .exec(function(err, results) {
-            if (err) { return next(err); }
-            else if (results) {
-                res.json({ message: 'Username already exists.' });
-            } else {
-                // Hash password
-                bcrypt.hash(user.password, 10, (err, hashedPassword) => {
-                    if (err) { return next(err); }
-                    user.password = hashedPassword;
+        if (!errors.isEmpty()) {
+            res.json({ username: req.body.username, errors: errors.array() });
+        } else {
+            const user = new User({
+                username: req.body.username,
+                password: req.body.password,
+                role: req.body.role
+            });
 
-                    // Save user info to database
-                    user.save(function(err) {
+            // Check if username already exists
+            User.findOne({ 'username': user.username })
+            .exec(function(err, results) {
+                if (err) { return next(err); }
+                else if (results) {
+                    res.json({ message: 'Username already exists.' });
+                } else {
+                    // Hash password
+                    bcrypt.hash(user.password, 10, (err, hashedPassword) => {
                         if (err) { return next(err); }
-                        res.json({
-                            user: {
-                                'id': user._id,
-                                username: user.username,
-                                role: user.role
-                            },
-                            message: 'Success'
+                        user.password = hashedPassword;
+    
+                        // Save user info to database
+                        user.save(function(err) {
+                            if (err) { return next(err); }
+                            res.json({
+                                user: {
+                                    'id': user._id,
+                                    username: user.username,
+                                    role: user.role
+                                },
+                                message: 'Success'
+                            });
                         });
                     });
-                });
-            }
-        });
+                }
+            });
+        }
     }
 ];
 
