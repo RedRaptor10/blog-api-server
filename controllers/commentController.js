@@ -1,4 +1,5 @@
 const Comment = require('../models/comment');
+const { body, validationResult } = require('express-validator');
 
 // Checks if user is authorized
 exports.checkAuth = (req, res, next) => {
@@ -55,28 +56,39 @@ exports.getPostComments = function(req, res, next) {
 
 // Create Comment
 exports.createPostComment = [
-    (req, res, next) => {
-        const comment = new Comment ({
-            post: req.params.postId,
-            author: req.body.author,
-            date: req.body.date,
-            content: req.body.content
-        });
+    // Validate and sanitize fields
+    body('content', 'Comment cannot be empty.').trim().isLength({ min: 1 }).escape(),
 
-        // Save comment to database
-        comment.save(function(err) {
-            if (err) { return next(err); }
-            res.json({
-                comment: {
-                    'id': comment._id,
-                    post: comment.post._id,
-                    author: comment.author._id,
-                    date: comment.date,
-                    content: comment.content
-                },
-                message: 'Success'
+    // Process Form Submit
+    (req, res, next) => {
+        // Extract the validation errors from request
+        const errors = validationResult(req);
+
+        if (!errors.isEmpty()) {
+            res.json({ content: req.body.content, errors: errors.array() });
+        } else {
+            const comment = new Comment ({
+                post: req.params.postId,
+                author: req.body.author,
+                date: req.body.date,
+                content: req.body.content
             });
-        });
+
+            // Save comment to database
+            comment.save(function(err) {
+                if (err) { return next(err); }
+                res.json({
+                    comment: {
+                        'id': comment._id,
+                        post: comment.post._id,
+                        author: comment.author._id,
+                        date: comment.date,
+                        content: comment.content
+                    },
+                    message: 'Success'
+                });
+            });
+        }
     }
 ];
 
