@@ -14,8 +14,14 @@ exports.checkAuth = (req, res, next) => {
 
 // Get Users
 exports.getUsers = function(req, res, next) {
+    let sortby = '_id';
+    let orderby = 'ascending';
+
+    if (req.query.sort == 'username') { sortby = 'username'; }
+    if (req.query.order == 'desc') { orderby = 'descending'; }
+
     User.find({}, { 'password': 0} ) // Exclude password from db query
-    .sort({ '_id': 1 }) // Sort by id in ascending order
+    .sort({ [sortby]: orderby }) // Sort by (Default: id in ascending order)
     .exec(function(err, results) {
         if (err) { return next(err); }
         res.json(results);

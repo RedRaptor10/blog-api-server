@@ -45,8 +45,14 @@ exports.getComment = function(req, res, next) {
 
 // Get Post Comments
 exports.getPostComments = function(req, res, next) {
+    let sortby = '_id';
+    let orderby = 'ascending';
+
+    if (req.query.sort == 'date') { sortby = 'date'; }
+    if (req.query.order == 'desc') { orderby = 'descending'; }
+
     Comment.find({'post': req.params.postId })
-    .sort({ '_id': 1 }) // Sort by id in ascending order
+    .sort({ [sortby]: orderby }) // Sort by (Default: id in ascending order)
     .populate('author', { 'password': 0 }) // Exclude password from db query
     .exec(function(err, results) {
         if (err) { return next(err); }
