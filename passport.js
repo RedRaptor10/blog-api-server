@@ -8,11 +8,14 @@ const bcrypt = require('bcryptjs');
 
 // Local Strategy used for initial log in
 // NOTE: "done" is an internal passport method, taking in the parameters (err, user, info)
-passport.use(new LocalStrategy((username, password, done) => {
+// NOTE: Must include {passReqToCallback: true} and pass req as 1st parameter to read request object
+passport.use(new LocalStrategy({passReqToCallback: true}, (req, username, password, done) => {
     // Check if username & password matches in database
     User.findOne({ username: username }, (err, user) => {
         if (err) { return done(err); }
         if (!user) { return done(null, false, { message: 'Incorrect username.' }); }
+	// Check if logging in from admin client (Only allow admins to log in)
+	if (req.body.admin && user.role != 'admin') { return done(null, false, { message: 'You are not an admin.' }); }
         bcrypt.compare(password, user.password, (err, res) => {
             if (err) { return done(err); }
             if (res) { return done(null, { id: user._id, username: user.username, role: user.role }, { message: 'Logged in successfully.' }); }
