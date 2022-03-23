@@ -77,7 +77,7 @@ exports.updatePost = [
             author: req.body.author,
             date: req.body.date,
             content: req.body.content,
-            published: true
+            published: req.body.published
         });
 
         // Save post to database
