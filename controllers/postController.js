@@ -1,5 +1,6 @@
 const Post = require('../models/post');
 const Comment = require('../models/comment');
+const { body, validationResult } = require('express-validator');
 
 // Checks if user is authorized
 exports.checkAuth = (req, res, next) => {
@@ -41,30 +42,42 @@ exports.getPost = function(req, res, next) {
 
 // Create Post
 exports.createPost = [
-    (req, res, next) => {
-        const post = new Post ({
-            title: req.body.title,
-            author: req.body.author,
-            date: req.body.date,
-            content: req.body.content,
-            published: true
-        });
+    // Validate and sanitize fields
+    body('title', 'Title cannot be empty.').trim().isLength({ min: 1 }).escape(),
+    body('content', 'Comment cannot be empty.').trim().isLength({ min: 1 }).escape(),
 
-        // Save post to database
-        post.save(function(err) {
-            if (err) { return next(err); }
-            res.json({
-                post: {
-                    'id': post._id,
-                    title: post.title,
-                    author: post.author._id,
-                    date: post.date,
-                    content: post.content,
-                    published: post.published
-                },
-                message: 'Success'
+    // Process Form Submit
+    (req, res, next) => {
+        // Extract the validation errors from request
+        const errors = validationResult(req);
+
+        if (!errors.isEmpty()) {
+            res.json({ title: req.body.title, content: req.body.content, errors: errors.array() });
+        } else {
+            const post = new Post ({
+                title: req.body.title,
+                author: req.body.author,
+                date: req.body.date,
+                content: req.body.content,
+                published: req.body.published
             });
-        });
+
+            // Save post to database
+            post.save(function(err) {
+                if (err) { return next(err); }
+                res.json({
+                    post: {
+                        'id': post._id,
+                        title: post.title,
+                        author: post.author._id,
+                        date: post.date,
+                        content: post.content,
+                        published: post.published
+                    },
+                    message: 'Success'
+                });
+            });
+        }
     }
 ];
 
