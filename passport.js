@@ -6,6 +6,14 @@ const ExtractJwt = passportJwt.ExtractJwt;
 const User = require('./models/user');
 const bcrypt = require('bcryptjs');
 
+// Security Configuration
+var nconf = require("nconf");
+
+// Setup nconf
+nconf.argv()
+  .env()
+  .file({ file: './config.json' });
+
 // Local Strategy used for initial log in
 // NOTE: "done" is an internal passport method, taking in the parameters (err, user, info)
 // NOTE: Must include {passReqToCallback: true} and pass req as 1st parameter to read request object
@@ -26,7 +34,7 @@ passport.use(new LocalStrategy({passReqToCallback: true}, (req, username, passwo
 
 const jwtOptions = {
     jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(), // Extracts token from authorization header with the scheme "bearer"
-    secretOrKey: 'jwt_secret' // The secret (symmetric) or PEM-encoded public key (asymmetric) for verifying the token's signature
+    secretOrKey: nconf.get('JWT_SECRET') // The secret (symmetric) or PEM-encoded public key (asymmetric) for verifying the token's signature
 };
 
 // Jwt Strategy used for validating token on specific routes

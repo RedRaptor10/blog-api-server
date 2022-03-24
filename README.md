@@ -1,0 +1,27 @@
+# Blog API Server
+
+A blog API server app created in NodeJS using Express through [TheOdinProject](https://www.theodinproject.com) online course. The purpose of this project is to create a fully-functional REST API back-end that can be called from any client front-end.
+
+[View Demo]()
+
+[Client]()
+
+[Admin]()
+
+# Features
+
+- Provide a back-end API server to be called from clients
+- Sign up with an account and save login info to tokens
+- Log in/out via authentication
+- Secure user data by hashing passwords
+- Read blog posts from admin
+- Comment on blog posts by signing up with an account
+- (Admin) Create blog posts and manage users/posts/comments
+
+# Technologies
+
+- NodeJS / Express
+- JavaScript
+- React
+- HTML
+- CSS

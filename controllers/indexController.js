@@ -2,6 +2,14 @@ const { body, validationResult } = require('express-validator');
 const jwt = require('jsonwebtoken');
 const passport = require('passport');
 
+// Security Configuration
+var nconf = require("nconf");
+
+// Setup nconf
+nconf.argv()
+  .env()
+  .file({ file: '../config.json' });
+
 // Log In
 exports.logIn = [
     // Validate and sanitize fields
@@ -26,7 +34,7 @@ exports.logIn = [
 	        req.login(user, {session: false}, (error) => {
 	            if (error) { res.json(error); }
 	            // Generate a signed JSON web token with the contents of the user object (NOTE: Access user info via req.user.info)
-	            const token = jwt.sign({info: user}, 'jwt_secret', { expiresIn: '5m' });
+	            const token = jwt.sign({info: user}, nconf.get('JWT_SECRET'), { expiresIn: '5m' });
 	            return res.json({ user, token });
 	        });
             })(req, res);
